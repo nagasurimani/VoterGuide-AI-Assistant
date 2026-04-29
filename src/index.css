@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .waving-flag-bg {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: -10;
+        opacity: 0.15;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    
+    .flag-shape {
+        width: 150vw;
+        height: 150vh;
+        background: linear-gradient(to bottom, #FF9933 0%, #FF9933 33.3%, white 33.3%, white 66.6%, #138808 66.6%, #138808 100%);
+        animation: wave 10s ease-in-out infinite alternate;
+        transform-origin: center right;
+        margin-top: -25vh;
+        margin-left: -25vw;
+    }
+
+    @keyframes wave {
+        0% { transform: scale(1.1) translateY(0px) rotate(-1deg); }
+        50% { transform: scale(1.2) translateY(15px) rotate(1deg); }
+        100% { transform: scale(1.1) translateY(-5px) rotate(-0.5deg); }
+    }
+}
