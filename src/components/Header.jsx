@@ -1,6 +1,6 @@
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-md">
+    <header className="sticky top-0 z-50 bg-white shadow-md border-b-2 border-[#000080]">
       {/* 5px Tricolor strip */}
       <div className="flex h-[5px] w-full">
         <div className="w-1/3 bg-[#FF9933] h-full"></div>
@@ -11,8 +11,8 @@ export default function Header() {
       {/* Logos and Navigation */}
       <div className="bg-[#FFFFFF] py-3 px-6 flex justify-between items-center shadow-sm">
         <div className="flex items-center space-x-4">
-          <img src="/ECINet-logo.svg" alt="ECI Logo" className="h-[55px] object-contain" />
-          <span className="text-[#000080] font-bold text-2xl font-serif hidden lg:block">Election Commission of India</span>
+          <img src="/ECINet-logo.svg" alt="ECI Logo" className="h-[60px] object-contain" />
+          <span className="text-[#000080] font-bold text-2xl font-serif hidden lg:block">National Voter Services Portal</span>
         </div>
         
         {/* Navigation Bar styled with theme colors */}

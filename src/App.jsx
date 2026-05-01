@@ -26,8 +26,8 @@ function App() {
           width: '100%', 
           height: '100%', 
           zIndex: -1, 
-          opacity: 0.08, 
-          filter: 'blur(4px)',
+          opacity: 0.05, 
+          filter: 'blur(8px)',
           objectFit: 'cover'
         }} 
       />
