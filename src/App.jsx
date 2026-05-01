@@ -6,10 +6,11 @@ import CoreServices from './components/CoreServices';
 import NewsTicker from './components/NewsTicker';
 import VoterJourney from './components/VoterJourney';
 import GeminiChat from './components/GeminiChat';
+import MythFactAccordion from './components/MythFactAccordion';
 
 function App() {
   return (
-    <div className="min-h-screen relative font-sans text-gray-900 bg-[#f8f9fa] selection:bg-[#FF9933] selection:text-white flex flex-col">
+    <div className="min-h-screen relative font-sans text-[#000080] bg-white selection:bg-[#FF9933] selection:text-white flex flex-col">
       {/* Waving Flag Pure CSS Background */}
       <div className="waving-flag-bg">
         <div className="flag-shape"></div>
@@ -26,8 +27,8 @@ function App() {
           width: '100%', 
           height: '100%', 
           zIndex: -1, 
-          opacity: 0.05, 
-          filter: 'blur(8px)',
+          opacity: 0.02, 
+          filter: 'blur(10px)',
           objectFit: 'cover'
         }} 
       />
@@ -38,6 +39,7 @@ function App() {
         <Hero />
         <CoreServices />
         <VoterJourney />
+        <MythFactAccordion />
         <ActionCards />
       </main>
       

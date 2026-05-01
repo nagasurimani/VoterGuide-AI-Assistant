@@ -1,20 +1,29 @@
-import { useState } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { MessageSquare, X, Send } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { useVoter } from '../config/VoterContext';
 
-// Initialize Gemini
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "dummy_key";
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
-  systemInstruction: "You are the official 2026 Election Guide. Act as a polite and helpful Indian civil servant. Guide the user through the Enrollment to Voting timeline. Do NOT generate political opinions. Provide clear, step-by-step instructions for civic processes."
+  systemInstruction: "You are the Senior Election Officer. Your tone is extremely helpful, formal, and authoritative. You guide citizens through the electoral process in India. Use professional language and avoid political bias."
 });
 
 export default function GeminiChat() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([{ role: 'model', content: "Namaste! I am your ECI Digital Sahayak. How can I help you prepare for the 2026 State Elections?" }]);
+  const { activeOnboarding } = useVoter();
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const greeting = activeOnboarding 
+      ? `I see you are looking at the ${activeOnboarding} section. Do you need help with this step?`
+      : "Namaste! I am your Senior Election Officer. How can I assist you with your electoral queries today?";
+    
+    setMessages([{ role: 'model', content: greeting }]);
+  }, [activeOnboarding]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -24,22 +33,15 @@ export default function GeminiChat() {
     setLoading(true);
 
     try {
-      if (apiKey === "dummy_key") {
-        throw new Error("Missing Key");
-      }
-      
+      if (apiKey === "dummy_key") throw new Error("Missing Key");
       const chat = model.startChat({
-        history: messages.map(m => ({
-          role: m.role,
-          parts: [{ text: m.content }]
-        }))
+        history: messages.map(m => ({ role: m.role, parts: [{ text: m.content }] }))
       });
       const result = await chat.sendMessage(userMsg);
       const response = await result.response;
       setMessages(prev => [...prev, { role: 'model', content: response.text() }]);
     } catch (error) {
-      console.error(error);
-      setMessages(prev => [...prev, { role: 'model', content: "I'm sorry, I cannot connect to the civic database right now. Please check if VITE_GEMINI_API_KEY is configured in your .env file." }]);
+      setMessages(prev => [...prev, { role: 'model', content: "I am unable to connect to the server. Please ensure your API key is configured." }]);
     }
     setLoading(false);
   };
@@ -47,52 +49,41 @@ export default function GeminiChat() {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen ? (
-        <div className="w-[350px] h-[450px] bg-white border-[3px] border-navy shadow-[0_10px_40px_rgb(0,0,0,0.3)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 rounded-lg">
-          <div className="bg-[#000080] text-white p-4 flex justify-between items-center border-b-4 border-[#FF9933]">
-            <div className="flex items-center gap-2 font-bold tracking-wide">
-              <MessageCircle size={22} className="text-[#FF9933]" /> Digital Sahayak
-            </div>
-            <button onClick={() => setIsOpen(false)} className="hover:text-[#FF9933] transition-colors">
-              <X size={24} />
-            </button>
+        <div className="w-[320px] h-[400px] bg-white border border-gray-200 shadow-2xl flex flex-col rounded-2xl overflow-hidden animate-in slide-in-from-bottom-5">
+          <div className="bg-[#000080] text-white p-4 flex justify-between items-center">
+            <span className="font-bold text-sm tracking-widest uppercase">Election Assistant</span>
+            <button onClick={() => setIsOpen(false)}><X size={18} /></button>
           </div>
           
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 flex flex-col gap-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
             {messages.map((m, i) => (
-              <div key={i} className={`p-3 rounded-lg max-w-[85%] font-medium ${m.role === 'user' ? 'bg-[#000080] text-white self-end border border-[#000050]' : 'bg-white border border-gray-200 text-gray-800 self-start shadow-sm'} text-[15px] leading-relaxed`}>
+              <div key={i} className={`p-3 rounded-xl text-sm ${m.role === 'user' ? 'bg-[#000080] text-white self-end ml-8' : 'bg-white text-gray-800 border border-gray-100 self-start mr-8 shadow-sm'}`}>
                 {m.content}
               </div>
             ))}
-            {loading && <div className="self-start text-sm text-gray-500 font-bold animate-pulse flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#000080] animate-bounce"></div>
-              <div className="w-2 h-2 rounded-full bg-[#000080] animate-bounce delay-75"></div>
-              <div className="w-2 h-2 rounded-full bg-[#000080] animate-bounce delay-150"></div>
-            </div>}
+            {loading && <div className="text-xs text-gray-400 font-bold animate-pulse">Officer is typing...</div>}
           </div>
           
-          <div className="p-3 bg-white border-t-2 border-gray-100 flex gap-2">
+          <div className="p-3 bg-white border-t border-gray-100 flex gap-2">
             <input 
               type="text" 
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              className="flex-1 border-2 border-gray-200 rounded-lg px-3 py-2 text-[15px] focus:outline-none focus:border-[#000080] transition-colors font-medium text-gray-800"
-              placeholder="Ask me anything..."
+              className="flex-1 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#000080]"
+              placeholder="Type your query..."
             />
-            <button onClick={handleSend} className="bg-[#000080] text-white px-4 rounded-lg hover:bg-[#FF9933] transition-colors shadow-sm font-bold">
-              <Send size={18} />
+            <button onClick={handleSend} className="bg-[#000080] text-white p-2 rounded-full hover:scale-105 transition-transform">
+              <Send size={16} />
             </button>
           </div>
         </div>
       ) : (
         <button 
           onClick={() => setIsOpen(true)}
-          aria-label="Open Chat"
-          className="bg-[#000080] hover:scale-105 transition-transform duration-300 text-white py-3 px-5 shadow-[0_4px_15px_rgb(0,0,0,0.3)] flex items-center justify-center border-4 border-white mb-2 mr-2 gap-3"
-          style={{borderRadius: '0px'}} // Still blocky but standard
+          className="bg-[#000080] text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform border-2 border-white"
         >
-          <MessageCircle size={30} />
-          <span className="font-bold text-lg hidden sm:inline">Digital Sahayak</span>
+          <MessageSquare size={24} />
         </button>
       )}
     </div>
