@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
@@ -8,18 +9,25 @@ import VoterJourney from './components/VoterJourney';
 import GeminiChat from './components/GeminiChat';
 import MythFactAccordion from './components/MythFactAccordion';
 
-function App() {
+/**
+ * The root Application component.
+ * 
+ * @component
+ * @returns {JSX.Element}
+ */
+const App = () => {
   return (
     <div className="min-h-screen relative font-sans text-[#000080] bg-white selection:bg-[#FF9933] selection:text-white flex flex-col">
       {/* Waving Flag Pure CSS Background */}
-      <div className="waving-flag-bg">
+      <div className="waving-flag-bg" role="presentation">
         <div className="flag-shape"></div>
       </div>
       
       {/* Dynamic Background Watermark */}
       <img 
         src="/images.svg" 
-        alt="Background watermark" 
+        alt="" 
+        role="presentation"
         style={{
           position: 'fixed', 
           top: 0, 
@@ -35,7 +43,8 @@ function App() {
       
       <Header />
       <NewsTicker />
-      <main className="pb-10 pt-6 relative z-10 flex-grow">
+      
+      <main id="main-content" className="pb-10 pt-6 relative z-10 flex-grow">
         <Hero />
         <CoreServices />
         <VoterJourney />
@@ -47,6 +56,6 @@ function App() {
       <GeminiChat />
     </div>
   );
-}
+};
 
 export default App;

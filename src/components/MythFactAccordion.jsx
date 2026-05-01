@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle, ChevronDown } from 'lucide-react';
 
@@ -17,14 +17,24 @@ const myths = [
   }
 ];
 
-export default function MythFactAccordion() {
+/**
+ * An accordion component that displays common electoral myths and their factual corrections.
+ * 
+ * @component
+ * @returns {JSX.Element}
+ */
+const MythFactAccordion = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
+  const handleToggle = useCallback((index) => {
+    setOpenIndex(prev => (prev === index ? null : index));
+  }, []);
+
   return (
-    <section className="max-w-3xl mx-auto px-6 mb-24 font-sans">
+    <section className="max-w-3xl mx-auto px-6 mb-24 font-sans" aria-labelledby="myth-fact-heading">
       <div className="flex items-center gap-3 mb-8">
-        <HelpCircle className="text-[#000080]" size={32} />
-        <h2 className="text-3xl font-black text-[#000080] uppercase tracking-tight">
+        <HelpCircle className="text-[#000080]" size={32} aria-hidden="true" />
+        <h2 id="myth-fact-heading" className="text-3xl font-black text-[#000080] uppercase tracking-tight">
           Myth vs. Fact
         </h2>
       </div>
@@ -33,20 +43,28 @@ export default function MythFactAccordion() {
         {myths.map((item, index) => (
           <div key={index} className="border border-gray-100 rounded-xl overflow-hidden shadow-sm">
             <button 
-              onClick={() => setOpenIndex(openIndex === index ? null : index)}
+              onClick={() => handleToggle(index)}
+              aria-expanded={openIndex === index}
+              aria-controls={`fact-content-${index}`}
               className="w-full p-5 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors text-left"
             >
               <span className="text-red-600 font-bold">❌ Myth: <span className="text-gray-800">{item.myth}</span></span>
-              <ChevronDown className={`transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`} size={20} />
+              <ChevronDown 
+                className={`transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`} 
+                size={20} 
+                aria-hidden="true"
+              />
             </button>
             
             <AnimatePresence>
               {openIndex === index && (
                 <motion.div
+                  id={`fact-content-${index}`}
                   initial={{ height: 0 }}
                   animate={{ height: 'auto' }}
                   exit={{ height: 0 }}
                   className="overflow-hidden bg-green-50"
+                  role="region"
                 >
                   <div className="p-5 border-t border-green-100">
                     <p className="text-green-800 font-bold">
@@ -61,4 +79,6 @@ export default function MythFactAccordion() {
       </div>
     </section>
   );
-}
+};
+
+export default React.memo(MythFactAccordion);

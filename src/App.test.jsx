@@ -1,10 +1,11 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import App from './App';
 import { VoterProvider } from './config/VoterContext';
 
-describe('VoterGuide UI Components', () => {
-  it('verifies "VoterGuide" is rendered in the header', () => {
+describe('VoterGuide Application', () => {
+  it('renders the main title "VOTER GUIDE AI"', () => {
     render(
       <VoterProvider>
         <App />
@@ -13,25 +14,37 @@ describe('VoterGuide UI Components', () => {
     expect(screen.getByText(/VOTER GUIDE AI/i)).toBeInTheDocument();
   });
 
-  it('verifies "Plain Language" toggle is present', () => {
+  it('renders accessibility features like the main content area', () => {
     render(
       <VoterProvider>
         <App />
       </VoterProvider>
     );
-    expect(screen.getByText(/Plain Language/i)).toBeInTheDocument();
+    const main = screen.getByRole('main');
+    expect(main).toBeInTheDocument();
+    expect(main).toHaveAttribute('id', 'main-content');
   });
 
-  it('verifies "Sahayak" is visible after opening the chat', () => {
+  it('verifies "Plain Language" toggle is present and accessible', () => {
+    render(
+      <VoterProvider>
+        <App />
+      </VoterProvider>
+    );
+    expect(screen.getByLabelText(/Plain Language/i)).toBeInTheDocument();
+  });
+
+  it('opens the assistant chat when the chat button is clicked', () => {
     render(
       <VoterProvider>
         <App />
       </VoterProvider>
     );
     
-    const chatButton = screen.getByLabelText(/Open Chat/i);
+    const chatButton = screen.getByLabelText(/Open Election Assistant Chat/i);
     fireEvent.click(chatButton);
     
     expect(screen.getByText(/Sahayak/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Type your query.../i)).toBeInTheDocument();
   });
 });

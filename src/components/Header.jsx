@@ -1,12 +1,20 @@
+import React from 'react';
 import { useVoter } from '../config/VoterContext';
+import ToggleSwitch from './ToggleSwitch';
 
-export default function Header() {
+/**
+ * The application header containing branding, toggles, and navigation.
+ * 
+ * @component
+ * @returns {JSX.Element}
+ */
+const Header = () => {
   const { plainLanguage, setPlainLanguage, firstTimeVoter, setFirstTimeVoter } = useVoter();
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+    <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200" aria-label="Main Header">
       {/* 5px Tricolor strip */}
-      <div className="flex h-[5px] w-full">
+      <div className="flex h-[5px] w-full" role="presentation">
         <div className="w-1/3 bg-[#FF9933] h-full"></div>
         <div className="w-1/3 bg-white h-full"></div>
         <div className="w-1/3 bg-[#138808] h-full"></div>
@@ -20,34 +28,22 @@ export default function Header() {
 
         {/* Smart Toggles */}
         <div className="flex items-center space-x-6">
-          <div className="flex items-center space-x-2">
-            <input 
-              type="checkbox" 
-              id="plain-mode" 
-              checked={plainLanguage}
-              onChange={() => setPlainLanguage(!plainLanguage)}
-              className="w-4 h-4 accent-[#000080]"
-            />
-            <label htmlFor="plain-mode" className="text-sm font-bold text-[#000080] cursor-pointer">
-              Plain Language
-            </label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <input 
-              type="checkbox" 
-              id="first-time" 
-              checked={firstTimeVoter}
-              onChange={() => setFirstTimeVoter(!firstTimeVoter)}
-              className="w-4 h-4 accent-[#000080]"
-            />
-            <label htmlFor="first-time" className="text-sm font-bold text-[#000080] cursor-pointer">
-              First-Time Voter
-            </label>
-          </div>
+          <ToggleSwitch 
+            id="plain-mode"
+            label="Plain Language"
+            checked={plainLanguage}
+            onChange={() => setPlainLanguage(!plainLanguage)}
+          />
+          <ToggleSwitch 
+            id="first-time"
+            label="First-Time Voter"
+            checked={firstTimeVoter}
+            onChange={() => setFirstTimeVoter(!firstTimeVoter)}
+          />
         </div>
 
         {/* Navigation Bar */}
-        <nav className="hidden lg:flex space-x-8">
+        <nav className="hidden lg:flex space-x-8" aria-label="Main Navigation">
           <a href="#" className="font-semibold text-[#000080] hover:text-[#FF9933] transition-colors duration-300">Home</a>
           <a href="#" className="font-semibold text-[#000080] hover:text-[#138808] transition-colors duration-300">Elections</a>
           <a href="#" className="font-semibold text-[#000080] hover:text-[#FF9933] transition-colors duration-300">Support</a>
@@ -55,4 +51,6 @@ export default function Header() {
       </div>
     </header>
   );
-}
+};
+
+export default React.memo(Header);

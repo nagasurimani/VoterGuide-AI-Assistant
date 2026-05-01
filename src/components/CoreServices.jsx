@@ -1,3 +1,4 @@
+import React from 'react';
 import { Search, UserPlus, MapPin, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useVoter } from '../config/VoterContext';

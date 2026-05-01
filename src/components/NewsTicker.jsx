@@ -1,3 +1,4 @@
+import React from 'react';
 export default function NewsTicker() {
   return (
     <div className="bg-[#000080] text-white py-2 overflow-hidden whitespace-nowrap shadow-md">
