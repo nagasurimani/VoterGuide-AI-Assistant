@@ -51,7 +51,7 @@ export default function GeminiChat() {
       {isOpen ? (
         <div className="w-[320px] h-[400px] bg-white border border-gray-200 shadow-2xl flex flex-col rounded-2xl overflow-hidden animate-in slide-in-from-bottom-5">
           <div className="bg-[#000080] text-white p-4 flex justify-between items-center">
-            <span className="font-bold text-sm tracking-widest uppercase">Election Assistant</span>
+            <span className="font-bold text-sm tracking-widest uppercase">Sahayak</span>
             <button onClick={() => setIsOpen(false)}><X size={18} /></button>
           </div>
           
@@ -81,6 +81,7 @@ export default function GeminiChat() {
       ) : (
         <button 
           onClick={() => setIsOpen(true)}
+          aria-label="Open Chat"
           className="bg-[#000080] text-white p-3 rounded-full shadow-lg hover:scale-110 transition-transform border-2 border-white"
         >
           <MessageSquare size={24} />
